@@ -1,0 +1,19 @@
+.header {
+  height: 40px;
+  background-color: #1939C8;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.header:hover {
+  background-color: #1030A8;
+}

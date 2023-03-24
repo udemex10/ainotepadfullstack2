@@ -21,7 +21,7 @@ const Popup = ({ onClose, title }) => {
       <div className="popup">
         <h2>{title}</h2>
         <form onSubmit={handleSubmit}>
-          <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+          <input type="text" className="w-full" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
           <button type="submit">OK</button>
           <button type="button" onClick={handleCancel}>Cancel</button>
         </form>

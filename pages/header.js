@@ -1,12 +1,14 @@
 import React from 'react';
+import classes from './Header.module.css';
+import './Header.module.css';
 
 const Header = () => {
   return (
-
-    <div style={{ height: '40px', backgroundColor: "#1939C8" , color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', width: "100vw" }}>
+    <div className={classes.header}>
       AINotepad
     </div>
   );
 };
 
 export default Header;
+
