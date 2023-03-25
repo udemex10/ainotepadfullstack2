@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Header from './header';
 import {saveAs} from 'file-saver';
 import Popup from './Popup';
@@ -100,13 +100,14 @@ function NotepadApp() {
   //
   //
   //View Stuff Begins
-    const [zoomLevel, setZoomLevel] = useState(1);
-    const zoomIn = () => {
-      setZoomLevel(prevZoomLevel => prevZoomLevel + 0.1);
-    };
-    const zoomOut = () => {
-      setZoomLevel(prevZoomLevel => prevZoomLevel - 0.1);
-    };
+ const [zoomLevel, setZoomLevel] = useState(1);
+  const zoomIn = () => {
+    setZoomLevel((prevZoomLevel) => prevZoomLevel + 0.1);
+  };
+  const zoomOut = () => {
+    setZoomLevel((prevZoomLevel) => prevZoomLevel - 0.1);
+  };
+
       // Add the openHelpPopup and closeHelpPopup functions
   const openHelpPopup = () => {
     setIsHelpPopupOpen(true);
@@ -176,6 +177,31 @@ const handlePopupClose = async (inputValue) => {
   }
 };
 
+const toggleMenu = (menuStateSetter, open) => {
+  clearTimeout(menuStateSetter.timeout);
+  menuStateSetter.timeout = setTimeout(() => {
+    menuStateSetter.stateSetter(open);
+  }, 100);
+};
+
+const handleClickOutside = (event) => {
+  if (
+    event.target.closest(".toolbar-item") === null &&
+    (isFileMenuOpen  || isEditMenuOpen  || isViewMenuOpen || isAItoolsMenuOpen  || isHelpMenuOpen)
+  ) {
+    setIsFileMenuOpen(false);
+    setIsEditMenuOpen(false);
+    setIsViewMenuOpen(false);
+    setIsAItoolsMenuOpen(false);
+    setIsHelpMenuOpen(false);
+  }
+};
+useEffect(() => {
+  window.addEventListener("click", handleClickOutside);
+  return () => {
+    window.removeEventListener("click", handleClickOutside);
+  };
+}, [isFileMenuOpen, isEditMenuOpen, isViewMenuOpen, isAItoolsMenuOpen, isHelpMenuOpen]);
 
 
 
@@ -185,8 +211,8 @@ const handlePopupClose = async (inputValue) => {
 
     <div className="toolbar flex bg-white px-2 py-1">
       <div className="toolbar-item group relative cursor-pointer mr-4 font-semibold"
-           onClick={() => setIsFileMenuOpen(!isFileMenuOpen)}
-           onMouseEnter={() => setIsFileMenuOpen(!isFileMenuOpen)} onMouseLeave={() => setIsFileMenuOpen(isFileMenuOpen)}
+           onMouseEnter={() => toggleMenu({ stateSetter: setIsFileMenuOpen }, true)}
+           onMouseLeave={() => toggleMenu({ stateSetter: setIsFileMenuOpen }, false)}
       >
           File
         {isFileMenuOpen && (
@@ -200,8 +226,8 @@ const handlePopupClose = async (inputValue) => {
       </div>
 
       <div className="toolbar-item group relative cursor-pointer mr-4 font-semibold"
-           onClick={() => setIsEditMenuOpen(!isEditMenuOpen)}
-          onMouseEnter={() => setIsEditMenuOpen(!isEditMenuOpen)} onMouseLeave={() => setIsEditMenuOpen(isEditMenuOpen)}
+           onMouseEnter={() => toggleMenu({ stateSetter: setIsEditMenuOpen }, true)}
+           onMouseLeave={() => toggleMenu({ stateSetter: setIsEditMenuOpen }, false)}
       >
         Edit
         {isEditMenuOpen && (
@@ -215,10 +241,8 @@ const handlePopupClose = async (inputValue) => {
         )}
       </div>
       <div className="toolbar-item group relative cursor-pointer mr-4 font-semibold"
-           onClick={() => setIsViewMenuOpen(!isViewMenuOpen)}
-            onMouseEnter={() => setIsViewMenuOpen(!isViewMenuOpen)} onMouseLeave={() => setIsViewMenuOpen(isViewMenuOpen)}
-           onKeyDown={() => setIsViewMenuOpen(!isViewMenuOpen)}
-           onKeyUp={() => setIsViewMenuOpen(!isViewMenuOpen)}
+           onMouseEnter={() => toggleMenu({ stateSetter: setIsViewMenuOpen }, true)}
+           onMouseLeave={() => toggleMenu({ stateSetter: setIsViewMenuOpen }, false)}
       >
         View
         {isViewMenuOpen && (
@@ -230,8 +254,8 @@ const handlePopupClose = async (inputValue) => {
       </div>
 
       <div className="toolbar-item group relative cursor-pointer mr-4 font-semibold"
-           onClick={() => setIsAItoolsMenuOpen(!isAItoolsMenuOpen)}
-            onMouseEnter={() => setIsAItoolsMenuOpen(!isAItoolsMenuOpen)} onMouseLeave={() => setIsAItoolsMenuOpen(isAItoolsMenuOpen)}
+           onMouseEnter={() => toggleMenu({ stateSetter: setIsAItoolsMenuOpen }, true)}
+           onMouseLeave={() => toggleMenu({ stateSetter: setIsAItoolsMenuOpen }, false)}
       >
         AItools
         {isAItoolsMenuOpen && (
@@ -246,8 +270,8 @@ const handlePopupClose = async (inputValue) => {
         )}
       </div>
       <div className="toolbar-item group relative cursor-pointer mr-4 font-semibold"
-                 onClick={() => setIsHelpMenuOpen(!isHelpMenuOpen)}
-            onMouseEnter={() => setIsHelpMenuOpen(!isHelpMenuOpen)} onMouseLeave={() => setIsHelpMenuOpen(isHelpMenuOpen)}>
+                 onMouseEnter={() => toggleMenu({ stateSetter: setIsHelpMenuOpen }, true)}
+                 onMouseLeave={() => toggleMenu({ stateSetter: setIsHelpMenuOpen }, false)}>
         Help
         {isHelpMenuOpen && (
           <div className="toolbar-item-content absolute left-0 mt-1 bg-white shadow-md rounded-md z-10">
@@ -263,6 +287,7 @@ const handlePopupClose = async (inputValue) => {
       ref={textAreaRef}
       value={text}
        onChange={handleTextChange}
+      style={{ fontSize: `${zoomLevel}rem` }}
     />
   </div>
 
