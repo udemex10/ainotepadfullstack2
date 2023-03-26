@@ -5,7 +5,7 @@ import './Header.module.css';
 const Header = () => {
   return (
     <div className={classes.header}>
-      AINotepad
+      AINOTEPAD
     </div>
   );
 };
